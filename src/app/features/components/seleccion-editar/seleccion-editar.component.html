@@ -1,0 +1,16 @@
+<div mat-dialog-content>
+    <h3>{{ datos.encabezado }}</h3>
+    <mat-form-field>
+        <mat-label>Nombre de la Seleccion</mat-label>
+        <input matInput [(ngModel)]="datos.seleccion.nombre">
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+        <mat-label>Entidad Gestora</mat-label>
+        <input matInput [(ngModel)]="datos.seleccion.entidad">
+    </mat-form-field>
+</div>
+<div mat-dialog-actions>
+    <button mat-raised-button color="primary" [mat-dialog-close]="datos">Aceptar</button>
+    <button mat-stroked-button color="primary" (click)="cerrar()">Cancelar</button>
+</div>
