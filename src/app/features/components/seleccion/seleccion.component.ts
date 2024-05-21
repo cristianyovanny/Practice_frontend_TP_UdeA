@@ -30,6 +30,7 @@ export class SeleccionComponent {
   public tipoSeleccion = SelectionType;
 
   private seleccionEscogida: Seleccion | undefined;
+  private indiceSeleccionEscogida: number = -1;
 
   constructor(private servicio: SeleccionService, private servicioDialogo: MatDialog) { 
     this.listar()
@@ -38,6 +39,7 @@ export class SeleccionComponent {
   escoger(event: any) {
     if(event.type == "click"){
       this.seleccionEscogida = event.row;
+      this.indiceSeleccionEscogida = this.selecciones.findIndex(seleccion => seleccion == this.seleccionEscogida);
     }
   }
 
@@ -51,10 +53,21 @@ export class SeleccionComponent {
       },
     });
   }
-  
 
   buscar(){
-
+    if (this.textoBusqueda.length > 0) {
+      this.servicio.buscar(this.textoBusqueda).subscribe({
+        next: responde => {
+          this.selecciones = responde;
+        },
+        error: error => {
+          window.alert(error.message);
+        }
+      });
+    }
+    else {
+      this.listar()
+    }
   }
 
   agregar(){
@@ -101,9 +114,23 @@ export class SeleccionComponent {
         height: '300px',
         data: {
           seleccion: this.seleccionEscogida,
-          encabezado: "Editando Selección de Fútbol [$this.seleccionEscogida.nombre]"
+          encabezado: `Editando Selección de Fútbol [${this.seleccionEscogida.nombre}]`
         },
         disableClose: true
+      });
+      dialogo.afterClosed().subscribe({
+        next: datos => {
+          if(datos){
+            this.servicio.modificar(datos.seleccion).subscribe({
+              next: response => {
+                this.selecciones [this.indiceSeleccionEscogida] = response;
+              },
+              error: error => {
+                window.alert(error.message);
+              }
+            });
+          }
+        }
       });
     }
     else {
