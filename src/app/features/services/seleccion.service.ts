@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../../enviroments/enviroment';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { Seleccion } from '../../core/Seleccion';
+import { Seleccion } from '../../core/entidades/Seleccion';
 
 @Injectable({
   providedIn: 'root'
@@ -29,6 +29,10 @@ export class SeleccionService {
 
   public modificar(seleccion: Seleccion):Observable<Seleccion>{ 
     return this.http.put<Seleccion>(`${this.url}modificar`, seleccion);
+  }
+
+  public eliminar(id: number):Observable<boolean>{ 
+    return this.http.delete<boolean>(`${this.url}eliminar/${id}`);
   }
 
 }
