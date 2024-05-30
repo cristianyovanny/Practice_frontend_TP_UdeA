@@ -1,1 +1,25 @@
-<p>campeonato-editar works!</p>
+<div mat-dialog-content>
+    <h3>{{ datos.encabezado }}</h3>
+    <mat-form-field>
+        <mat-label>Nombre del Campeonato</mat-label>
+        <input matInput [(ngModel)]="datos.campeonato.nombre">
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+        <mat-label>Año</mat-label>
+        <input matInput [(ngModel)]="datos.campeonato.year">
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+        <mat-label>Organizador</mat-label>
+        <mat-select [(value)]="datos.campeonato.seleccion.id">
+            <mat-option *ngFor="let s of datos.selecciones" [value]="s.id">
+                {{ s.nombre }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+</div>
+<div mat-dialog-actions>
+    <button mat-raised-button color="primary" [mat-dialog-close]="datos">Aceptar</button>
+    <button mat-stroked-button color="primary" (click)="cerrar()">Cancelar</button>
+</div>

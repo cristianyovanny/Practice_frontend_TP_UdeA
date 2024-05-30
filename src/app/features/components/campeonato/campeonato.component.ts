@@ -7,6 +7,8 @@ import { CampeonatoService } from '../../services/campeonato.service';
 import { MatDialog } from '@angular/material/dialog';
 import { CampeonatoEditarComponent } from '../campeonato-editar/campeonato-editar.component';
 import { DecidirComponent } from '../../../shared/components/decidir/decidir.component';
+import { Seleccion } from '../../../core/entidades/Seleccion';
+import { SeleccionService } from '../../services/seleccion.service';
 
 @Component({
   selector: 'app-campeonato',
@@ -23,6 +25,7 @@ export class CampeonatoComponent {
 
   public textoBusqueda: string = "";
   public campeonatos: Campeonato[] = [];
+  public selecciones: Seleccion[] = [];
   public columnas= [
     { name: 'Campeonato', prop: 'nombre' },
     { name: 'Año', prop: 'año'},
@@ -34,8 +37,13 @@ export class CampeonatoComponent {
   private campeonatoEscogido: Campeonato | undefined;
   private indiceCampeonatoEscogido: number = -1;
 
-  constructor(private servicio: CampeonatoService, private servicioDialogo: MatDialog) { 
+  constructor(
+    private servicio: CampeonatoService, 
+    private servicioSeleccion: SeleccionService,
+    private servicioDialogo: MatDialog
+  ) { 
     this.listar()
+    this.listarSelecciones()
   }
 
   escoger(event: any) {
@@ -49,6 +57,18 @@ export class CampeonatoComponent {
     this.servicio.listar().subscribe({
       next: responde => {
         this.campeonatos = responde;
+        this.campeonatos.map(c => c.year = c.año);
+      },
+      error: error => {
+        window.alert(error.mesaage);
+      },
+    });
+  }
+
+  listarSelecciones() {
+    this.servicioSeleccion.listar().subscribe({
+      next: responde => {
+        this.selecciones = responde;
       },
       error: error => {
         window.alert(error.mesaage);
@@ -80,9 +100,14 @@ export class CampeonatoComponent {
         campeonato: {
           id: 0,
           nombre: "",
-          entidad: ""
+          año: 0,
+          year: 0,
+          seleccion: {
+            id: 0, nombre: "", entidad: "",
+          }
         },
-        encabezado: "Agregando Campeonato"
+        encabezado: "Agregando Campeonato",
+        selecciones: this.selecciones,
       },
       disableClose: true
     });
@@ -94,6 +119,7 @@ export class CampeonatoComponent {
               this.servicio.buscar(datos.campeonato.nombre).subscribe({
                 next: responde => {
                   this.campeonatos = responde;
+                  this.campeonatos.map(c => c.year = c.año);
                 },
                 error: error => {
                   window.alert(error.message);
@@ -126,6 +152,7 @@ export class CampeonatoComponent {
             this.servicio.modificar(datos.campeonato).subscribe({
               next: response => {
                 this.campeonatos [this.indiceCampeonatoEscogido] = response;
+                this.campeonatos.map(c => c.year = c.año);
               },
               error: error => {
                 window.alert(error.message);

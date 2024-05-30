@@ -24,10 +24,12 @@ export class CampeonatoService {
   }
 
   public agregar(campeonato: Campeonato):Observable<Campeonato>{ 
+    campeonato.año = campeonato.year;
     return this.http.post<Campeonato>(`${this.url}agregar`, campeonato);
   }
 
   public modificar(campeonato: Campeonato):Observable<Campeonato>{ 
+    campeonato.año = campeonato.year;
     return this.http.put<Campeonato>(`${this.url}modificar`, campeonato);
   }
 
